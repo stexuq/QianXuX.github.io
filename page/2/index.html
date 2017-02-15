@@ -255,6 +255,326 @@
             
               
                 
+                <a class="post-title-link" href="/2017/02/09/java_7_Methods/" itemprop="url">
+                  Effective Java notes - Methods
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-02-09T22:31:21-08:00" content="2017-02-09">
+              2017-02-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习笔记/Effective-Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Effective Java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/09/java_7_Methods/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/09/java_7_Methods/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>This chapter discusses several aspects of method design: how to treat parameters and return values, how to design method signatures, and how to document methods. Much of the material in this chapter applies to constructors as well as to methods. Like Chapter 5, this chapter focuses on usability, robustness, and flexibility.</p>
+</blockquote>
+<h2 id="Check-parameter-before-using-them-for-execution"><a href="#Check-parameter-before-using-them-for-execution" class="headerlink" title="Check parameter before using them for execution."></a>Check parameter before using them for execution.</h2><p>For example, Exception should be thrown if the parameter is invalid</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> BigInteger <span class="title">mod</span> <span class="params">(BigInteger m)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (m.signum() &lt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArithmeticExepction(<span class="string">"Modules &lt;= 0 "</span> + m);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// computation logic</span></div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">long</span> a[], <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">assert</span> a != <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">assert</span> offset &gt;= <span class="number">0</span> &amp;&amp; offset &lt;= a.length;</div><div class="line">    <span class="keyword">assert</span> length &gt;= <span class="number">0</span> &amp;&amp; length &lt;= a.length - offset;</div><div class="line">    </div><div class="line">    <span class="comment">// computation logic</span></div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>总结，每次你写函数之前，应该做的第一件事就是边界检查（包括输入的参数是否合法）</p>
+</blockquote>
+<h2 id="Make-defensive-copy"><a href="#Make-defensive-copy" class="headerlink" title="Make defensive copy"></a>Make defensive copy</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Notprotected</span> </span>&#123;</div><div class="line">    Date start;</div><div class="line">    Date end;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Notprotected</span><span class="params">(Date start, Date end)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.start = start;</div><div class="line">        <span class="keyword">this</span>.end = end;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String []args)</span> </span>&#123;</div><div class="line">    Date s = <span class="keyword">new</span> Date();</div><div class="line">    Date e = <span class="keyword">new</span> Date();</div><div class="line">    Notprotected n = <span class="keyword">new</span> Notprotected(s, e);</div><div class="line">    e.setYear(<span class="number">78</span>); <span class="comment">// this changes Notprotected n as well!</span></div><div class="line">    </div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这个类不是『不可改变』的本质原因是因为java constructor创建新对象时，传递参数是对象的内存地址。如果不特别在构造函数中把输入参数的值复制一遍，就可能造成意料不到的后果。同时，在做getter的时候，也要返回类中对象的拷贝而不是对象本身。</p>
+</blockquote>
+<h2 id="Design-method-signatures-carefully"><a href="#Design-method-signatures-carefully" class="headerlink" title="Design method signatures carefully"></a>Design method signatures carefully</h2><ol>
+<li>choose a good name; It should follow the naming convention along with others in the same package.</li>
+<li>Dont provide too many methods or just make method name short for own convenience.</li>
+<li>Avoid long parameter list (aim 4 or fewer)</li>
+<li>For parameter types, faovr interface over class (use Map instead of HashMap)</li>
+<li>Prefer two-element enums over boolean </li>
+</ol>
+<h2 id="Use-overloading-judicously"><a href="#Use-overloading-judicously" class="headerlink" title="Use overloading judicously"></a>Use overloading judicously</h2><p>Overload: 函数名字相同，输入参数类型不同。在编译时就已经选择好了<br>override: 子类和父类函数名字相同，输入参数相同，但在运行时动态决定调用哪个函数</p>
+<p>safe: never use two overload methods with the same number of parameters.</p>
+<h2 id="Use-varages-judicously"><a href="#Use-varages-judicously" class="headerlink" title="Use varages judicously"></a>Use varages judicously</h2><blockquote>
+<p>Don’t retrofit every method that has a final array parameter; use varargs only when a call really operates on a variable-length sequence of values.</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">print</span><span class="params">(String ...args)</span> </span>&#123;</div><div class="line">    <span class="comment">// accept 0 or more arguments</span></div><div class="line">    <span class="keyword">for</span> (String a : args) &#123;</div><div class="line">        <span class="comment">///</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">print</span><span class="params">(String firstArg, String secondArg)</span> </span>&#123;</div><div class="line">    <span class="comment">/// accept 1 or more argument</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Return-Empty-String-or-Collections-not-null"><a href="#Return-Empty-String-or-Collections-not-null" class="headerlink" title="Return Empty String or Collections, not null"></a>Return Empty String or Collections, not null</h2><blockquote>
+<p>there is no reason ever to return null from an array- or collection-valued method instead of returning an empty array or collection</p>
+</blockquote>
+<h2 id="Write-docs-for-all-exposed-API-methods"><a href="#Write-docs-for-all-exposed-API-methods" class="headerlink" title="Write docs for all exposed API methods"></a>Write docs for all exposed API methods</h2><p>@param<br>@return<br>@throw<br>@code</p>
+<p></p><p> <i></i></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/09/java_1_objects/" itemprop="url">
+                  Effective Java notes - Creating and Destroying Objects
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-02-09T22:30:42-08:00" content="2017-02-09">
+              2017-02-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习笔记/Effective-Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Effective Java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/09/java_1_objects/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/09/java_1_objects/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>This chapter concerns creating and destroying objects: when and how to create them, when and how to avoid creating them, how to ensure they are destroyed in a timely manner, and how to manage any cleanup actions that must precede their destruction.</p>
+</blockquote>
+<p><em><strong>TBC</strong></em></p>
+<h2 id="Consider-static-factories-instead-of-constructors"><a href="#Consider-static-factories-instead-of-constructors" class="headerlink" title="Consider static factories instead of constructors"></a>Consider static factories instead of constructors</h2><p>instead of a constructor, use a <strong>static</strong> method that returns an instance of the class.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Boolean <span class="title">valueOf</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> b ? Boolean.TRUE : Boolean.FALSE;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Pros"><a href="#Pros" class="headerlink" title="Pros:"></a>Pros:</h3><ol>
+<li>Static factory methods, unlike constructors, have names. And it will be easier for clients who use them.</li>
+<li>Static factory methods, unlike constructors, are not required to create a new object each time they are invoked. This allows immutable classes to use a preconstructed instance, or cache instances. The ability to return same objects from repeated invocations are called <em>instance-controlled</em>.</li>
+<li>Unlike constructors, static factory can return an object of any subtype of their return type, which gives you the flexibility in choosing the class of the returned object.</li>
+<li>Reduce the verbosity of creating parameterized type instances</li>
+</ol>
+<h3 id="Cons"><a href="#Cons" class="headerlink" title="Cons:"></a>Cons:</h3><ol>
+<li>Classes with only static factory methos but no public/proteceted constructors cannnot be subclassed.</li>
+<li>Static factory methods are not readily distinguished like constructors in API docs, which makes it hard to figure our how to instantiate a class.</li>
+</ol>
+<h3 id="common-naming"><a href="#common-naming" class="headerlink" title="common naming"></a>common naming</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">valueOf()</div><div class="line">of()</div><div class="line">getInstance()</div><div class="line">newInstance()</div><div class="line">getType()</div><div class="line">newType()</div></pre></td></tr></table></figure>
+<h2 id="Consider-a-builder-when-faced-with-many-constructor-parameters"><a href="#Consider-a-builder-when-faced-with-many-constructor-parameters" class="headerlink" title="Consider a builder when faced with many constructor parameters"></a>Consider a builder when faced with many constructor parameters</h2><blockquote>
+<p>Static factories and constructors do not <strong>scale well</strong> to large number of optional parameters.</p>
+</blockquote>
+<p>Telescope vs Javabean vs Builder<br>1) Telescope uses polymorphism in consturcing objects with multiple parameters – difficult to read<br>2) Javabean uses differnt set methods, but may cause inconsistency<br>3)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// factory pattern</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Pizza</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> cheese;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> tomato;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> bacon;</div><div class="line">    </div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">        <span class="comment">// required </span></div><div class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> size;</div><div class="line">        <span class="comment">//optional</span></div><div class="line">        <span class="keyword">private</span> <span class="keyword">boolean</span> cheese = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">boolean</span> tomato = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">boolean</span> bacon = <span class="keyword">false</span>;</div><div class="line">        </div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Builder</span> <span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.size = size;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">cheese</span><span class="params">(<span class="keyword">boolean</span> cheese)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.cheese = cheese;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">tomato</span><span class="params">(<span class="keyword">boolean</span> tomato)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.tomato = tomato;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">bacon</span><span class="params">(<span class="keyword">boolean</span> bacon)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.bacon = bacon;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="function"><span class="keyword">public</span> Pizza <span class="title">build</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Pizza(<span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Pizza</span><span class="params">(Builder builder)</span> </span>&#123;</div><div class="line">        size = builder.size;</div><div class="line">        cheese = builder.cheese;</div><div class="line">        tomato = builder.tomato;</div><div class="line">        bacon = builder.bacon;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printPizza</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"size = "</span> + String.valueOf(size) + <span class="string">" cheese = "</span> + String.valueOf(cheese) + </div><div class="line">        <span class="string">" tomato = "</span> + String.valueOf(tomato) + <span class="string">" bacon = "</span> + String.valueOf(bacon)</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainDriver</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Pizza pizza = <span class="keyword">new</span> Pizza.Builder(<span class="number">12</span>).cheese(<span class="keyword">true</span>).tomato(<span class="keyword">true</span>).bacon(<span class="keyword">false</span>).build();</div><div class="line">        pizza.printPizza();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Enforce-the-singleton-property-with-a-private-constructor-or-an-enum-type"><a href="#Enforce-the-singleton-property-with-a-private-constructor-or-an-enum-type" class="headerlink" title="Enforce the singleton property with a private constructor or an enum type"></a>Enforce the singleton property with a private constructor or an enum type</h2><blockquote>
+<p>A <em>singleton</em> is simply a class that is instantiated exactly once.</p>
+</blockquote>
+<p>The preferred way is to use a single-element enum type to implement a singleton.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Enum singleton </span></div><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Elvis &#123;</div><div class="line">    INSTANCE;</div><div class="line">    </div><div class="line">   <span class="function"><span class="keyword">private</span> <span class="title">Elvis</span><span class="params">()</span> </span>&#123;</div><div class="line">       System.out.println(Here)</div><div class="line">   &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Enforce-noninstantiability-with-a-private-constructor"><a href="#Enforce-noninstantiability-with-a-private-constructor" class="headerlink" title="Enforce noninstantiability with a private constructor"></a>Enforce noninstantiability with a private constructor</h2><h2 id="Avoid-creating-unnecessary-objects"><a href="#Avoid-creating-unnecessary-objects" class="headerlink" title="Avoid creating unnecessary objects"></a>Avoid creating unnecessary objects</h2><h2 id="Eliminate-obsolete-object-references"><a href="#Eliminate-obsolete-object-references" class="headerlink" title="Eliminate obsolete object references"></a>Eliminate obsolete object references</h2><h2 id="Avoid-finalizers"><a href="#Avoid-finalizers" class="headerlink" title="Avoid finalizers"></a>Avoid finalizers</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/02/09/翻译：从分析Medium 2016年最火的252篇文章中学到的一课/" itemprop="url">
                   翻译：从分析Medium 2016年最火的252篇文章中获得的启发
                 </a>
@@ -1157,7 +1477,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -1165,7 +1485,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>
@@ -1174,7 +1494,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
